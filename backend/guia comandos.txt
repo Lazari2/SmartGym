@@ -4,3 +4,6 @@ flask db migrate -m "commit da migração"
 flask db upgrade -> (atualiza o banco)
 
 flask db downgrade -> (reverte o estado para o da ultima migração)
+
+
+Teste rodolfo
