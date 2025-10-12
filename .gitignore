@@ -1,0 +1,82 @@
+# =========================================
+# Android / Kotlin
+# =========================================
+*.iml
+.gradle/
+local.properties
+/.idea
+/.kotlin
+/.kotlin_sessions
+/build/
+/captures/
+/outputs/
+/navigation.json
+.DS_Store
+
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Android Studio
+.idea/
+*.iml
+*.hprof
+
+# =========================================
+# Python backend (Flask / FastAPI / etc)
+# =========================================
+# Ambiente virtual
+/backend/venv/
+/backend/__pycache__/
+/backend/**/*.pyc
+/backend/**/*.pyo
+/backend/.pytest_cache
+/backend/.mypy_cache
+/backend/.ruff_cache
+/backend/.coverage
+/backend/htmlcov/
+backend/.env
+
+# =========================================
+# Sistema Operacional
+# =========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# =========================================
+# IDEs e Ferramentas
+# =========================================
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# JetBrains
+.idea/
+*.ipr
+*.iws
+
+# =========================================
+# Outros
+# =========================================
+# Logs e temporários
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Arquivos sensíveis
+.env
+.env.*
