@@ -21,3 +21,11 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+    
+    def to_dict(self):
+        return {
+            'id': str(self.id),  # Converte UUID para string
+            'username': self.username,
+            'email': self.email,
+            'created_at': self.created_at.isoformat()
+        }

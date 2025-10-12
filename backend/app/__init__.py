@@ -13,13 +13,12 @@ def create_app():
     app.config.from_object('app.config.Config') 
     
     db.init_app(app)
-    # jwt.init_app(app) 
+    jwt.init_app(app) 
     migrate.init_app(app, db)
-
-    # from app.routes.aluno_routes import aluno_bp
-    # from app.routes.treino_routes import treino_bp
-
-    # app.register_blueprint(aluno_bp, url_prefix='/aluno')
-    # app.register_blueprint(treino_bp, url_prefix='/treino')
+    
+    with app.app_context():
+        from .routes.auth_routes import auth_bp
+    #Blueprints
+    app.register_blueprint(auth_bp)
 
     return app
