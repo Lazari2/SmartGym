@@ -2,7 +2,10 @@ from app import db
 from app.models.workout import Workout
 from app.models.exercise import Exercise
 from app.models.memberProfile import MemberProfile
-from app.utils.exceptions import AppError  # (Vamos precisar criar este arquivo)
+from app.utils.exceptions import AppError 
+from app.services.exercise_service import ExerciseService
+import json
+import google.generativeai as genai
 import uuid
 
 class WorkoutService:
@@ -98,7 +101,7 @@ class WorkoutService:
                 raise AppError("Workout not found", 404)
 
             if str(workout.member_id) != member_id:
-                raise AppError("Unauthorized access to this workout.", 403) 
+                raise AppError("Unauthorized access to this workout", 403) 
 
             return workout.to_dict()
         except AppError as e:
@@ -106,3 +109,74 @@ class WorkoutService:
         except Exception as e:
             print(f"Error fetching workout details. {e}")
             raise AppError("Error fetching workout details.", 500)
+        
+    @staticmethod
+    def generate_workout_from_prompt(user_prompt):
+        """
+        Generates a training (RAG), returning both a text response
+        and structured JSON data
+        """
+
+        available_exercises = ExerciseService.get_all_exercise_templates_for_prompt()
+        available_exercises_json = json.dumps(available_exercises, ensure_ascii=False)
+
+        system_prompt = f"""
+        You are 'SmartGym AI', an expert personal trainer.
+        Your goal is to build a workout routine based on the user's request, using ONLY the exercises from the provided list.
+
+        ---
+        AVAILABLE EXERCISES LIST (JSON format):
+        {available_exercises_json}
+        ---
+
+        USER REQUEST (in Portuguese-Brazil): "{user_prompt}"
+
+        ---
+        INSTRUCTIONS:
+        Your response MUST be a single, valid JSON object. Do not add any text before or after the JSON.
+        The JSON object MUST have two keys: "chatResponse" and "workoutData".
+
+        1.  **chatResponse**: 
+            - This must be a string.
+            - Write a friendly, motivating, and concise text (in Portuguese-Brazil) explaining the workout you built.
+            - Briefly mention the exercises you selected, like a human coach would.
+            - Example: "Olá! Sou o SmartGym AI. Montei um treino de costas matador para você, focando em Puxada Frontal e Remada. Vamos nessa!"
+
+        2.  **workoutData**:
+            - This must be a JSON array of the exercises you selected from the AVAILABLE EXERCISES LIST.
+            - The exercises in this array MUST MATCH the ones you mentioned in the 'chatResponse'.
+            - For each exercise, suggest 'sets' (3 or 4) and 'reps' (e.g., "8-12").
+            - The array must follow this exact format:
+              [
+                {{"template_id": "the-uuid-from-the-list", "sets": 4, "reps": "8-12"}},
+                {{"template_id": "another-uuid", "sets": 3, "reps": "10-15"}}
+              ]
+        
+        Example of your FINAL response:
+        {{
+          "chatResponse": "Claro! Montei um treino de peito para você com Supino Reto e Crucifixo. Foco total!",
+          "workoutData": [
+            {{"template_id": "uuid-do-supino", "sets": 4, "reps": "8-12"}},
+            {{"template_id": "uuid-do-crucifixo", "sets": 3, "reps": "12-15"}}
+          ]
+        }}
+        """
+        
+        try:
+            model = genai.GenerativeModel('models/gemini-2.5-pro')
+            generation_config = genai.GenerationConfig(response_mime_type="application/json")
+            response = model.generate_content(system_prompt, generation_config=generation_config)
+
+            generated_data = json.loads(response.text)
+
+            if 'chatResponse' not in generated_data or 'workoutData' not in generated_data:
+                raise AppError("Unexpected error", 500)
+            
+            return generated_data
+
+        except json.JSONDecodeError:
+            print("RAG Error: AI did not return valid JSON.")
+            raise AppError("The AI ​​assistant was unable to format the response", 500)
+        except Exception as e:
+            print(f"Gemini API Error (RAG): {e}")
+            raise AppError(f"Error communicating with AI: {e}", 503)

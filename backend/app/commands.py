@@ -14,6 +14,7 @@ def seed_db():
         {'name': 'Supino Reto com Barra', 'muscle_group': 'Peito'},
         {'name': 'Crucifixo com Halteres', 'muscle_group': 'Peito'},
         {'name': 'Flexão de Braço', 'muscle_group': 'Peito'},
+        {'name': 'Supino inclinado com halteres', 'muscle_group': 'Peito'},
         
         {'name': 'Puxada Frontal (Pulley)', 'muscle_group': 'Costas'},
         {'name': 'Remada Curvada com Barra', 'muscle_group': 'Costas'},

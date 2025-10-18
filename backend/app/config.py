@@ -6,6 +6,7 @@ load_dotenv()
 class Config:
 
     SECRET_KEY = os.getenv('SECRET_KEY')
+    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
     DB_USER = os.getenv('POSTGRES_USER')
     DB_PASSWORD = os.getenv('POSTGRES_PASSWORD')

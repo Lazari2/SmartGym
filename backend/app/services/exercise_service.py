@@ -1,5 +1,6 @@
 from app import db
 from app.models.exerciseTemplate import ExerciseTemplate
+from app.utils.exceptions import AppError 
 
 class ExerciseService:
 
@@ -42,3 +43,13 @@ class ExerciseService:
         except Exception as e:
             print(f"Error searching for exercises by group: {e}")
             raise ValueError("Error retrieving exercise data.")
+    
+    @staticmethod
+    def get_all_exercise_templates_for_prompt():
+        """Search all exercise templates for RAG."""
+        try:
+            templates = ExerciseTemplate.query.order_by('muscle_group', 'name').all()
+            return [template.to_prompt_dict() for template in templates]
+        except Exception as e:
+            print(f"Erro ao buscar templates para IA: {e}")
+            raise AppError("Erro ao recuperar dados de exercícios.", 500)

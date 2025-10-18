@@ -53,3 +53,26 @@ def get_single_workout(workout_id):
         return jsonify({"error": e.message}), e.status_code
     except Exception as e:
         return jsonify({"error": f"Um erro inesperado ocorreu: {str(e)}"}), 500
+
+@workout_bp.route('/generate-ia', methods=['POST'])
+@jwt_required()
+def generate_workout_with_ia():
+    """
+    Endpoint for generating a list of exercises via AI (RAG).
+    Expects a JSON prompt.
+    Returns a JSON array of preformatted exercises.
+    """
+    data = request.get_json()
+    if not data or 'prompt' not in data:
+        raise AppError("The 'prompt' field is required.", 400)
+        
+    try:
+        user_prompt = data['prompt']
+        generated_exercises = WorkoutService.generate_workout_from_prompt(user_prompt)
+
+        return jsonify(generated_exercises), 200
+
+    except AppError as e:
+        return jsonify({"error": e.message}), e.status_code
+    except Exception as e:
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
