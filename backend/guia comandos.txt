@@ -1,6 +1,22 @@
+#######################################################
 Banco -> sempre no linux
 
 flask db migrate -m "commit da migração"
 flask db upgrade -> (atualiza o banco)
 
 flask db downgrade -> (reverte o estado para o da ultima migração)
+
+#########################################################
+
+POPULANDO OS EXERCÍCIOS NO BANCO:
+
+no caminho 
+/SmartGym/backend
+
+rode flask seed-db para rodar a função seed-db que se encontra no arquivo commands.py
+
+essa função popula os dados de exercíocios na tabela exerciseTemplate
+
+(pode sempre adcionar exercícios novos que ele irá popular só os novos dados)
+
+##############################################################

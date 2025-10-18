@@ -20,5 +20,7 @@ def create_app():
         from .routes.auth_routes import auth_bp
     #Blueprints
     app.register_blueprint(auth_bp)
+    from . import commands
+    app.cli.add_command(commands.seed_db) # CCOMANDO PARA POPULAR O BANCO COM EXERCÍCIOS
 
     return app
