@@ -24,7 +24,7 @@ class User(db.Model):
     
     def to_dict(self):
         return {
-            'id': str(self.id),  # Converte UUID para string
+            'id': str(self.id),  
             'username': self.username,
             'email': self.email,
             'created_at': self.created_at.isoformat()

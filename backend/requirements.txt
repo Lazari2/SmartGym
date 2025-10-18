@@ -6,5 +6,5 @@ requests==2.32.3
 python-dotenv==1.0.1
 openai==1.35.13
 psycopg2-binary
-Flask-Migrate # gerencia o versionamento do banco
+Flask-Migrate 
 Werkzeug

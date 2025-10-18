@@ -3,6 +3,7 @@ from app.models.user import User
 from app.models.exercise import Exercise
 from app.models.memberProfile import MemberProfile
 from app.models.workout import Workout
+from app.models.exerciseTemplate import ExerciseTemplate
 
 app = create_app()
 
@@ -14,7 +15,8 @@ def make_shell_context():
         'User': User,
         'MemberProfile': MemberProfile,
         'Workout': Workout,
-        'Exercise': Exercise
+        'Exercise': Exercise,
+        'ExerciseTemplate': ExerciseTemplate
         }
 
 if __name__ == '__main__':

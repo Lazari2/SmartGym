@@ -8,14 +8,17 @@ class Exercise(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     workout_id = db.Column(UUID(as_uuid=True), db.ForeignKey('workouts.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    exercise_template_id = db.Column(UUID(as_uuid=True), db.ForeignKey('exercise_templates.id'), nullable=False)
     sets = db.Column(db.Integer, nullable=False)
     reps = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Float)
+    notes = db.Column(db.Text, nullable=True)
     image_url = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    workout = db.relationship('Workout', backref='exercises')
+    workout = db.relationship('Workout', backref=db.backref('exercises', cascade="all, delete-orphan"))
+    template = db.relationship('ExerciseTemplate')
 
     def __repr__(self):
-        return f"<Exercise {self.name} - {self.sets}x{self.reps}>"
+        return f"<Exercise {self.template.name} - {self.sets}x{self.reps}>"
+    
