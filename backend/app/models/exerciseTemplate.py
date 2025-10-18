@@ -13,3 +13,12 @@ class ExerciseTemplate(db.Model):
 
     def __repr__(self):
         return f"<ExerciseTemplate '{self.name}' ({self.muscle_group})>"
+    
+    def to_dict(self):
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'muscle_group': self.muscle_group,
+            'description': self.description,
+            'image_url': self.image_url
+        }

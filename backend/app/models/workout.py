@@ -16,3 +16,20 @@ class Workout(db.Model):
 
     def __repr__(self):
         return f"<Workout {self.name} ({self.weekday})>"
+    
+    def to_dict(self):
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'weekday': self.weekday,
+            'created_at': self.created_at.isoformat(),
+            'exercises': [exercise.to_dict() for exercise in self.exercises]
+        }
+    
+    def to_summary_dict(self):
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'weekday': self.weekday,
+            'created_at': self.created_at.isoformat() 
+        }
