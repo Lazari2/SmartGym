@@ -22,3 +22,12 @@ class Exercise(db.Model):
     def __repr__(self):
         return f"<Exercise {self.template.name} - {self.sets}x{self.reps}>"
     
+    def to_dict(self):
+        return {
+            'id': str(self.id),
+            'sets': self.sets,
+            'reps': self.reps,
+            'weight': self.weight,
+            'notes': self.notes,
+            'template': self.template.to_dict() if self.template else None
+        }
