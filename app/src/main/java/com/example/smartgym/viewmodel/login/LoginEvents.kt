@@ -9,4 +9,5 @@ sealed class LoginEvent {
 sealed class UiEvent {
     data object LoginSuccess : UiEvent()
     data class ShowError(val message: String) : UiEvent()
+    data class RegisterSuccess(val message: String) : UiEvent()
 }

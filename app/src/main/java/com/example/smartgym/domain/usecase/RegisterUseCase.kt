@@ -12,23 +12,16 @@ class RegisterUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     operator fun invoke(request: RegisterRequest): Flow<Resource<RegisterResponse>> = flow {
+        emit(Resource.Loading())
+        if (request.password != request.confirm_password) {
+            emit(Resource.Error("As senhas não conferem."))
+            return@flow
+        }
         try {
-            emit(Resource.Loading())
-
-            if (request.password != request.confirm_password) {
-                emit(Resource.Error("As senhas não conferem."))
-                return@flow
-            }
-
-            val response = repository.register(request)
-
-            if (response != null) {
-                emit(Resource.Success(response))
-            } else {
-                emit(Resource.Error("Não foi possível criar a conta."))
-            }
+            val result = repository.register(request)
+            emit(result)
         } catch (e: Exception) {
-            emit(Resource.Error("Não foi possível conectar ao servidor. Tente novamente."))
+            emit(Resource.Error("Não foi possível conectar ao servidor: ${e.message}"))
         }
     }
 }

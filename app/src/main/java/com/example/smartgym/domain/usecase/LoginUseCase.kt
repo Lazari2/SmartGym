@@ -12,19 +12,12 @@ class LoginUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     operator fun invoke(request: LoginRequest): Flow<Resource<AuthResponse>> = flow {
+        emit(Resource.Loading())
         try {
-            emit(Resource.Loading())
-
-            val response = repository.login(request)
-
-            if (response != null) {
-                emit(Resource.Success(response))
-            } else {
-                // TODO: Ler o 'errorBody' do repositório para uma msg melhor
-                emit(Resource.Error("Email ou senha inválidos."))
-            }
+            val result = repository.login(request)
+            emit(result)
         } catch (e: Exception) {
-            emit(Resource.Error("Não foi possível conectar ao servidor. Tente novamente."))
+            emit(Resource.Error("Não foi possível conectar ao servidor: ${e.message}"))
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.smartgym.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -48,6 +49,9 @@ fun LoginScreen(
                 }
                 is UiEvent.ShowError -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is UiEvent.RegisterSuccess -> {
                 }
             }
         }
@@ -168,7 +172,12 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextButton(onClick = onNavigateToRegister) {
+            TextButton(
+                onClick = {
+                    Log.d("LoginScreen", "Botão 'Cadastre-se' CLICADO!")
+                    onNavigateToRegister()
+                }
+            ) {
                 Text("Não tem uma conta? Cadastre-se", color = Color.White)
             }
         }

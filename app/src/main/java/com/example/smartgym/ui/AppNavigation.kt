@@ -1,13 +1,14 @@
 package com.example.smartgym.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.example.smartgym.MainApp
 import com.example.smartgym.Routes
 import com.example.smartgym.ui.screens.LoginScreen
+import com.example.smartgym.ui.screens.RegisterScreen
 
 @Composable
 fun AppNavigation() {
@@ -30,13 +31,16 @@ fun AppNavigation() {
                         }
                     },
                     onNavigateToRegister = {
+                        Log.d("AppNavigation", "-> Chamando navController.navigate(Routes.REGISTER)")
                         navController.navigate(Routes.REGISTER)
                     }
                 )
             }
 
             composable(Routes.REGISTER) {
-                // RegisterScreen( ... )
+                RegisterScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
         }
 
