@@ -12,20 +12,60 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.example.smartgym.ui.layout.MainScaffold
 import com.example.smartgym.ui.screens.ChatScreen
 import com.example.smartgym.ui.screens.InitialScreen
+import com.example.smartgym.ui.screens.LoginScreen
 import com.example.smartgym.ui.screens.ProfileScreen
 import com.example.smartgym.ui.theme.SmartGymTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SmartGymTheme {
-                MainApp()
+                RootNavigation()
             }
+        }
+    }
+}
+
+@Composable
+fun RootNavigation() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = Routes.AUTH_GRAPH
+    ) {
+        navigation(
+            startDestination = Routes.LOGIN,
+            route = Routes.AUTH_GRAPH
+        ) {
+            composable(Routes.LOGIN) {
+                LoginScreen(
+                    onLoginSuccess = {
+                        navController.navigate(Routes.MAIN_GRAPH) {
+                            popUpTo(Routes.AUTH_GRAPH) { inclusive = true }
+                        }
+                    },
+                    onNavigateToRegister = {
+                        navController.navigate(Routes.REGISTER)
+                    }
+                )
+            }
+
+            composable(Routes.REGISTER) {
+                // RegisterScreen( ... )
+            }
+        }
+
+        composable(Routes.MAIN_GRAPH) {
+            MainApp()
         }
     }
 }
@@ -40,7 +80,6 @@ fun MainApp() {
         currentRoute = currentRoute ?: Routes.INITIAL,
         onNavigate = { route ->
             navController.navigate(route) {
-                // evita empilhar telas repetidas na navegação
                 launchSingleTop = true
                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                 restoreState = true
