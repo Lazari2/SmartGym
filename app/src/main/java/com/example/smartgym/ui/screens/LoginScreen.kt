@@ -58,9 +58,9 @@ fun LoginScreen(
     }
 
     val gradientBrush = Brush.linearGradient(
-        colors = listOf(PrimaryBlack, DarkRed),
-        start = Offset.Zero,
-        end = Offset.Infinite
+        colors = listOf(DarkRed, PrimaryBlack),
+        start = Offset(0f, 0f),
+        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
     )
     Box(
         modifier = Modifier
@@ -163,7 +163,7 @@ fun LoginScreen(
                     onClick = { viewModel.onEvent(LoginEvent.OnLoginClick) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = DarkRed
                     )
                 ) {
                     Text("Entrar", color = Color.White)

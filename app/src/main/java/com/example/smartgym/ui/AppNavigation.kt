@@ -16,7 +16,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Routes.AUTH_GRAPH
+        startDestination = Routes.MAIN_GRAPH
     ) {
 
         navigation(
