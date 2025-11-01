@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -19,28 +18,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smartgym.ui.components.WorkoutCard
 import com.example.smartgym.ui.components.WorkoutData
 import com.example.smartgym.ui.theme.DarkRed
 import com.example.smartgym.ui.theme.PrimaryBlack
 import com.example.smartgym.viewmodel.InitialScreenEvent
-import com.example.smartgym.viewmodel.InitialScreenViewModel
 import java.time.LocalDate
-
+import com.example.smartgym.viewmodel.InitialScreenUiState
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun InitialScreen(
-    initialScreenViewModel: InitialScreenViewModel = hiltViewModel()
+    uiState: InitialScreenUiState,
+    onEvent: (InitialScreenEvent) -> Unit
 ) {
     val gradientBrush = Brush.verticalGradient(
         colors = listOf(PrimaryBlack, DarkRed.copy(alpha = 0.3f))
     )
 
-    val uiState by initialScreenViewModel.uiState.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize().background(gradientBrush)) {
         Scaffold(
@@ -68,14 +64,15 @@ fun InitialScreen(
                             .padding(innerPadding)
                             .padding(horizontal = 16.dp),
                     ) {
-                        DisplayOffensive(offensiveDays = uiState.offensiveDays)
-                        Spacer(modifier = Modifier.height(24.dp))
-
+//                        DisplayOffensive(offensiveDays = uiState.offensiveDays)
+//                        Spacer(modifier = Modifier.height(24.dp))
+                            ScreenTitle(title = "Meus Treinos")
+                            Spacer(modifier = Modifier.height(24.dp))
                         WeekDaysCarousel(
                             trainedDates = uiState.trainedDates,
                             selectedDayName = uiState.selectedWeekday,
                             onDaySelected = { diaCompleto ->
-                                initialScreenViewModel.onEvent(InitialScreenEvent.OnWeekdaySelected(diaCompleto))
+                                onEvent(InitialScreenEvent.OnWeekdaySelected(diaCompleto))
                             }
                         )
 
@@ -140,7 +137,7 @@ fun WeekDaysCarousel(
     val daysToSubtract = today.dayOfWeek.value % 7L
     val firstDayOfWeek = today.minusDays(daysToSubtract)
 
-    val days = (0..6).map   {
+    val days = (0..6).map {
         val date = firstDayOfWeek.plusDays(it.toLong())
         val dayNameShort = date.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
             .replaceFirstChar { char -> char.uppercase() }.removeSuffix(".")
@@ -235,5 +232,22 @@ fun LastActivitiesSection(activities: List<WorkoutData>) {
         items(activities) { activity ->
             WorkoutCard(workout = activity, onClick = { /* TODO: Lidar com clique no treino */ })
         }
+    }
+}
+
+@Composable
+fun ScreenTitle(title: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = title,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
     }
 }

@@ -16,20 +16,12 @@ import com.example.smartgym.ui.theme.DarkRed
 fun MainScaffold(
     currentRoute: String,
     onNavigate: (String) -> Unit,
+    floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         bottomBar = { BottomNavBar(currentRoute = currentRoute, onNavigate = onNavigate) },
-        floatingActionButton = {
-            if (currentRoute == Routes.INITIAL) {
-                FloatingActionButton(
-                    onClick = { onNavigate(Routes.ADD_WORKOUT) },
-                    containerColor = DarkRed
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Adicionar Treino", tint = Color.White)
-                }
-            }
-        }
+        floatingActionButton = floatingActionButton
     ) { innerPadding ->
         content(innerPadding)
     }

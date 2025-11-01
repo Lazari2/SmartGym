@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartgym.data.network.RegisterRequest
 import com.example.smartgym.domain.usecase.RegisterUseCase
 import com.example.smartgym.domain.util.Resource
-import com.example.smartgym.viewmodel.login.UiEvent
+import com.example.smartgym.viewmodel.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -61,9 +61,7 @@ class RegisterViewModel @Inject constructor(
 
         registerUseCase(request).onEach { result ->
             when (result) {
-                is Resource.Loading -> {
-                    _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-                }
+                is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                 is Resource.Success -> {
                     _uiState.update { it.copy(isLoading = false) }
                     viewModelScope.launch {

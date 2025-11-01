@@ -7,27 +7,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
-import com.example.smartgym.data.model.WorkoutDetailResponse
 
-class GetWorkoutsUseCase @Inject constructor(
+class GetMuscleGroupsUseCase @Inject constructor(
     private val workoutRepository: WorkoutRepository,
     private val tokenManager: TokenManager
 ) {
-    operator fun invoke(): Flow<Resource<List<WorkoutDetailResponse>>> = flow {
+    operator fun invoke(): Flow<Resource<List<String>>> = flow {
         emit(Resource.Loading())
         try {
             val token = tokenManager.getToken().first()
-
             if (token == null) {
                 emit(Resource.Error("Usuário não autenticado."))
                 return@flow
             }
-
-            val result = workoutRepository.getWorkouts(token)
+            val result = workoutRepository.getMuscleGroups(token)
             emit(result)
-
         } catch (e: Exception) {
-            emit(Resource.Error("Erro ao buscar treinos: ${e.message}"))
+            emit(Resource.Error("Falha ao buscar grupos musculares: ${e.message}"))
         }
     }
 }
