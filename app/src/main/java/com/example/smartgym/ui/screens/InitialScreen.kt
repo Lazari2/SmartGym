@@ -8,9 +8,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -28,19 +33,40 @@ import com.example.smartgym.viewmodel.InitialScreenUiState
 import java.time.format.TextStyle
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InitialScreen(
     uiState: InitialScreenUiState,
-    onEvent: (InitialScreenEvent) -> Unit
+    onEvent: (InitialScreenEvent) -> Unit,
+    onLogoutClicked: () -> Unit
 ) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
     val gradientBrush = Brush.verticalGradient(
         colors = listOf(PrimaryBlack, DarkRed.copy(alpha = 0.3f))
+
     )
 
 
     Box(modifier = Modifier.fillMaxSize().background(gradientBrush)) {
         Scaffold(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = {ScreenTitle(title = "Meus Treinos") },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    ),
+                    actions = {
+                        IconButton(onClick = { showLogoutDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.ExitToApp,
+                                contentDescription = "Sair da conta",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                )
+            }
         ) { innerPadding ->
             when {
                 uiState.isLoading -> {
@@ -64,9 +90,10 @@ fun InitialScreen(
                             .padding(innerPadding)
                             .padding(horizontal = 16.dp),
                     ) {
+
 //                        DisplayOffensive(offensiveDays = uiState.offensiveDays)
 //                        Spacer(modifier = Modifier.height(24.dp))
-                            ScreenTitle(title = "Meus Treinos")
+
                             Spacer(modifier = Modifier.height(24.dp))
                         WeekDaysCarousel(
                             trainedDates = uiState.trainedDates,
@@ -80,6 +107,49 @@ fun InitialScreen(
                     }
                 }
             }
+        }
+        if (showLogoutDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showLogoutDialog = false
+                },
+
+                title = {
+                    Text(
+                        text = "Confirmar Saída",
+                        color = Color.White
+                    )
+                },
+                text = {
+                    Text(
+                        text = "Você tem certeza que deseja deslogar?",
+                        color = Color.LightGray
+                    )
+                },
+                containerColor = PrimaryBlack,
+
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showLogoutDialog = false
+                            onLogoutClicked()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkRed)
+                    ) {
+                        Text("Sim, deslogar")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showLogoutDialog = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                    ) {
+                        Text("Não, voltar")
+                    }
+                }
+            )
         }
     }
 }
