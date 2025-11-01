@@ -107,6 +107,9 @@ fun MainApp() {
                         }
                         Log.d("MainApp", "Chamando navController.popBackStack() AGORA")
                         navController.popBackStack()
+                    },
+                    onNavigateToChat = {
+                        navController.navigate(Routes.CHAT)
                     }
                 )
             }

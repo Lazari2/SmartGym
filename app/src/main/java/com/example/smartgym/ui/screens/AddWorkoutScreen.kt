@@ -31,13 +31,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import com.example.smartgym.ui.theme.DarkRed
 import com.example.smartgym.ui.theme.PrimaryBlack
 import com.example.smartgym.viewmodel.UiEvent
 import com.example.smartgym.viewmodel.addworkout.AddWorkoutEvent
 import com.example.smartgym.viewmodel.addworkout.AddWorkoutViewModel
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material3.FloatingActionButton
 
 data class ExerciseSet(val exercise: String, val weight: String, val reps: String)
 
@@ -45,6 +46,7 @@ data class ExerciseSet(val exercise: String, val weight: String, val reps: Strin
 @Composable
 fun AddWorkoutScreen(
     onNavigateBack: (workoutWasSaved: Boolean) -> Unit,
+    onNavigateToChat: () -> Unit,
     viewModel: AddWorkoutViewModel = hiltViewModel()
 ) {
 
@@ -127,13 +129,26 @@ fun AddWorkoutScreen(
                         navigationIconContentColor = Color.White
                     )
                 )
-            }
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { onNavigateToChat() },
+                    containerColor = DarkRed
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AutoAwesome,
+                        contentDescription = "Gerar treino com IA",
+                        tint = Color.White
+                    )
+                }
+            },
         ) { innerPadding ->
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp) // Padding lateral
+                    .padding(bottom = 80.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 OutlinedTextField(
