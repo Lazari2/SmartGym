@@ -145,19 +145,20 @@ class WorkoutService:
         2.  **workoutData**:
             - This must be a JSON array of the exercises you selected from the AVAILABLE EXERCISES LIST.
             - The exercises in this array MUST MATCH the ones you mentioned in the 'chatResponse'.
-            - For each exercise, suggest 'sets' (3 or 4) and 'reps' (e.g., "8-12").
+            - For each exercise, suggest 'sets' (3 or 4).
+            - For each exercise, Suggest 'reps' (e.g., 8, 10, 12). Reps MUST be an Integer, not a string.
             - The array must follow this exact format:
               [
-                {{"template_id": "the-uuid-from-the-list", "sets": 4, "reps": "8-12"}},
-                {{"template_id": "another-uuid", "sets": 3, "reps": "10-15"}}
+                {{"template_id": "the-uuid-from-the-list", "sets": 4, "reps": 8}},
+                {{"template_id": "another-uuid", "sets": 3, "reps": 15}}
               ]
         
         Example of your FINAL response:
         {{
           "chatResponse": "Claro! Montei um treino de peito para você com Supino Reto e Crucifixo. Foco total!",
           "workoutData": [
-            {{"template_id": "uuid-do-supino", "sets": 4, "reps": "8-12"}},
-            {{"template_id": "uuid-do-crucifixo", "sets": 3, "reps": "12-15"}}
+            {{"template_id": "uuid-do-supino", "sets": 4, "reps": 10}},
+            {{"template_id": "uuid-do-crucifixo", "sets": 3, "reps": 12}}
           ]
         }}
         """

@@ -1,7 +1,9 @@
 package com.example.smartgym.data.model
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class CreateWorkoutRequest(
@@ -9,13 +11,21 @@ data class CreateWorkoutRequest(
     val weekday: String,
     val exercises: List<ExerciseRequest>
 )
-
 @Serializable
+@Parcelize
 data class ExerciseRequest(
     @SerialName("template_id")
     val templateId: String,
+
+    @SerialName("sets")
     val sets: Int,
-    val reps: String,
+
+    @SerialName("reps")
+    val reps: Int,
+
+    @SerialName("weight")
     val weight: Double? = null,
+
+    @SerialName("notes")
     val notes: String? = null
-)
+) : Parcelable

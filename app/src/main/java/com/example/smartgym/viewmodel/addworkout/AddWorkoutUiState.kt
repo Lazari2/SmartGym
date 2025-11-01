@@ -6,7 +6,7 @@ data class AddedExercise(
     val templateId: String,
     val name: String,
     val sets: Int,
-    val reps: String,
+    val reps: Int,
     val weight: Double?,
     val notes: String?
 )
@@ -27,7 +27,7 @@ data class AddWorkoutUiState(
     val currentReps: String = "",
     val currentWeight: String = "",
     val currentNotes: String = "",
-
+    val allExerciseTemplates: List<ExerciseTemplateResponse> = emptyList(),
     val addedExercises: List<AddedExercise> = emptyList(),
 
     val isSaving: Boolean = false,

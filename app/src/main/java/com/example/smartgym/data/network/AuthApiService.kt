@@ -2,6 +2,7 @@ package com.example.smartgym.data.network
 
 import com.example.smartgym.data.model.AuthResponse
 import com.example.smartgym.data.model.CreateWorkoutRequest
+import com.example.smartgym.data.model.ExerciseRequest
 import com.example.smartgym.data.model.RegisterResponse
 import com.example.smartgym.data.model.WorkoutDetailResponse
 import com.example.smartgym.data.model.ExerciseTemplateResponse
@@ -27,6 +28,16 @@ data class RegisterRequest(
     val confirm_password: String
 )
 
+@Serializable
+data class IaGenerateRequest(
+    val prompt: String
+)
+
+@Serializable
+data class IaGenerateResponse(
+    val chatResponse: String,
+    val workoutData: List<ExerciseRequest>
+)
 interface AuthApiService {
 
     @POST("api/auth/login")
@@ -56,4 +67,10 @@ interface AuthApiService {
         @Header("Authorization") token: String,
         @Path("group_name") groupName: String
     ): Response<List<ExerciseTemplateResponse>>
+
+    @POST("api/workouts/generate-ia")
+    suspend fun generateWorkoutFromIa(
+        @Header("Authorization") token: String,
+        @Body request: IaGenerateRequest
+    ): Response<IaGenerateResponse>
 }
