@@ -3,6 +3,8 @@ package com.example.smartgym.data.repository
 import android.util.Log
 import com.example.smartgym.data.model.*
 import com.example.smartgym.data.network.AuthApiService
+import com.example.smartgym.data.network.IaGenerateRequest
+import com.example.smartgym.data.network.IaGenerateResponse
 import com.example.smartgym.domain.util.Resource
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -76,6 +78,25 @@ class WorkoutRepositoryImpl @Inject constructor(
             } else {
                 val errorMsg = response.errorBody()?.string()?.let { json.decodeFromString<ApiError>(it).error }
                 Resource.Error(errorMsg ?: "Erro ao buscar exercícios.")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Falha na conexão: ${e.message}")
+        }
+    }
+
+    override suspend fun generateWorkoutFromIa(
+        token: String,
+        prompt: String
+    ): Resource<IaGenerateResponse> {
+        return try {
+            val request = IaGenerateRequest(prompt = prompt)
+            val response = api.generateWorkoutFromIa("Bearer $token", request)
+
+            if (response.isSuccessful && response.body() != null) {
+                Resource.Success(response.body()!!)
+            } else {
+                val errorMsg = response.errorBody()?.string()?.let { json.decodeFromString<ApiError>(it).error }
+                Resource.Error(errorMsg ?: "Erro ao gerar treino.")
             }
         } catch (e: Exception) {
             Resource.Error("Falha na conexão: ${e.message}")

@@ -1,7 +1,7 @@
 package com.example.smartgym.viewmodel.addworkout
 
 import com.example.smartgym.data.model.ExerciseTemplateResponse
-
+import com.example.smartgym.data.model.ExerciseRequest
 sealed class AddWorkoutEvent {
 
     data class OnTitleChanged(val title: String) : AddWorkoutEvent()
@@ -17,6 +17,7 @@ sealed class AddWorkoutEvent {
     data object OnAddExerciseToList : AddWorkoutEvent()
     data class OnRemoveExercise(val exercise: AddedExercise) : AddWorkoutEvent()
     data object OnSaveWorkout : AddWorkoutEvent()
+    data class OnIaDataReceived(val exercises: List<ExerciseRequest>) : AddWorkoutEvent()
 }
 
 sealed class AddWorkoutUiEvent {

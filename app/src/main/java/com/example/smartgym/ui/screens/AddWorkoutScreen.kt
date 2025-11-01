@@ -47,7 +47,7 @@ data class ExerciseSet(val exercise: String, val weight: String, val reps: Strin
 fun AddWorkoutScreen(
     onNavigateBack: (workoutWasSaved: Boolean) -> Unit,
     onNavigateToChat: () -> Unit,
-    viewModel: AddWorkoutViewModel = hiltViewModel()
+    viewModel: AddWorkoutViewModel
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

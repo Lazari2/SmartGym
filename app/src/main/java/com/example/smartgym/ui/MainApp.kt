@@ -27,6 +27,12 @@ import com.example.smartgym.ui.screens.InitialScreen
 import com.example.smartgym.ui.screens.ProfileScreen
 import com.example.smartgym.ui.theme.DarkRed
 import com.example.smartgym.viewmodel.InitialScreenViewModel
+import com.example.smartgym.data.model.ExerciseRequest
+import com.example.smartgym.viewmodel.addworkout.AddWorkoutEvent
+import com.example.smartgym.viewmodel.addworkout.AddWorkoutViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavBackStackEntry
 
 @Composable
 fun MainApp() {
@@ -86,7 +92,32 @@ fun MainApp() {
                     onEvent = initialScreenViewModel::onEvent
                 )
             }
-            composable(Routes.CHAT) { ChatScreen() }
+            composable(Routes.CHAT) {
+                ChatScreen(
+                    onNavigateBack = { generatedData ->
+                        Log.d("MainAppNav", "onNavigateBack do Chat. Dados recebidos: $generatedData")
+                        if (generatedData != null) {
+                            try {
+                                navController.previousBackStackEntry
+                                    ?.savedStateHandle
+                                    ?.set("ia_workout_data", generatedData)
+
+                                Log.i("MainAppNav", "Dados enviados para a tela anterior via SavedStateHandle com SUCESSO.")
+
+                            } catch (e: Exception) {
+                                Log.e(
+                                    "MainAppNav",
+                                    "ERRO AO ENVIAR DADOS! A classe List<ExerciseRequest> é Parcelable?",
+                                    e
+                                )
+                            }
+                        } else {
+                            Log.w("MainAppNav", "Nenhum dado gerado para enviar de volta.")
+                        }
+                        navController.popBackStack()
+                    }
+                )
+            }
             composable(Routes.PROFILE) { ProfileScreen() }
 
             composable(
@@ -96,9 +127,32 @@ fun MainApp() {
                         type = NavType.StringType
                     }
                 )
-            ) {
+            ) { navBackStackEntry ->
 
+                val addWorkoutViewModel: AddWorkoutViewModel = hiltViewModel(navBackStackEntry)
+                val lifecycleOwner = LocalLifecycleOwner.current
+                LaunchedEffect(navBackStackEntry, lifecycleOwner) {
+
+                    val resultLiveData = navBackStackEntry.savedStateHandle
+                        .getLiveData<List<ExerciseRequest>>("ia_workout_data")
+
+                    resultLiveData.observe(lifecycleOwner) { data ->
+
+                        if (data != null) {
+                            Log.i(
+                                "AddWorkoutScreen",
+                                "DADOS DA IA RECEBIDOS (via LiveData): $data"
+                            )
+
+
+                            addWorkoutViewModel.onEvent(AddWorkoutEvent.OnIaDataReceived(data))
+
+                            navBackStackEntry.savedStateHandle.remove<List<ExerciseRequest>>("ia_workout_data")
+                        }
+                    }
+                }
                 AddWorkoutScreen(
+                    viewModel = addWorkoutViewModel,
                     onNavigateBack = { workoutWasSaved ->
                         Log.d("MainApp", "Callback onNavigateBack recebido! workoutWasSaved = $workoutWasSaved")
                         if (workoutWasSaved) {

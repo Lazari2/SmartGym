@@ -1,19 +1,21 @@
 package com.example.smartgym.ui.screens
 
+import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,6 +30,14 @@ import androidx.compose.ui.unit.dp
 import com.example.smartgym.ui.theme.DarkRed
 import com.example.smartgym.ui.theme.PrimaryBlack
 import java.util.UUID
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.smartgym.data.model.ExerciseRequest
+import com.example.smartgym.viewmodel.chat.ChatEvent
+import com.example.smartgym.viewmodel.chat.ChatUiEvent
+import com.example.smartgym.viewmodel.chat.ChatViewModel
+import com.example.smartgym.viewmodel.chat.Message
+import com.example.smartgym.viewmodel.chat.Sender
 
 enum class Sender {
     USER, AI
@@ -37,17 +47,15 @@ data class Message(val text: String, val sender: Sender, val id: UUID = UUID.ran
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen() {
+fun ChatScreen(
+    viewModel: ChatViewModel = hiltViewModel(),
+    onNavigateBack: (generatedData: List<ExerciseRequest>?) -> Unit,
+) {
     val gradientBrush = Brush.verticalGradient(
         colors = listOf(PrimaryBlack, DarkRed.copy(alpha = 0.3f))
     )
 
-    var messageText by remember { mutableStateOf("") }
-    val messages = remember {
-        mutableStateListOf(
-            Message("Olá! Como posso ajudar você a atingir seus objetivos de fitness hoje?", Sender.AI)
-        )
-    }
+    val uiState by viewModel.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize().background(gradientBrush)) {
         Scaffold(
@@ -55,6 +63,17 @@ fun ChatScreen() {
             topBar = {
                 CenterAlignedTopAppBar(
                     title = { Text("SmartGym IA", fontFamily = FontFamily.Monospace) },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            Log.d(
+                                "ChatScreen",
+                                "Seta 'Voltar' clicada. Enviando dados para onNavigateBack: ${uiState.generatedWorkoutData}"
+                            )
+                            onNavigateBack(uiState.generatedWorkoutData)
+                        }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Voltar", tint = Color.White)
+                        }
+                    },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = Color.Transparent,
                         titleContentColor = Color.White
@@ -63,14 +82,12 @@ fun ChatScreen() {
             },
             bottomBar = {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextField(
-                        value = messageText,
-                        onValueChange = { messageText = it },
+                        value = uiState.messageText,
+                        onValueChange = { viewModel.onEvent(ChatEvent.OnMessageChanged(it)) },
                         modifier = Modifier.weight(1f),
                         placeholder = { Text("Digite sua mensagem...") },
                         colors = TextFieldDefaults.colors(
@@ -86,14 +103,15 @@ fun ChatScreen() {
                         shape = RoundedCornerShape(24.dp),
                         singleLine = true
                     )
-                    IconButton(onClick = {
-                        if (messageText.isNotBlank()) {
-                            messages.add(Message(messageText, Sender.USER))
-                            messages.add(Message("Ótima pergunta! Vamos detalhar seu plano de treino.", Sender.AI))
-                            messageText = ""
+                    IconButton(
+                        onClick = { viewModel.onEvent(ChatEvent.OnSendClick) },
+                        enabled = !uiState.isAiLoading
+                    ) {
+                        if (uiState.isAiLoading) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                        } else {
+                            Icon(Icons.Default.Send, contentDescription = "Enviar", tint = Color.White)
                         }
-                    }) {
-                        Icon(Icons.Default.Send, contentDescription = "Enviar", tint = Color.White)
                     }
                 }
             }
@@ -105,8 +123,11 @@ fun ChatScreen() {
                     .padding(horizontal = 16.dp),
                 reverseLayout = true
             ) {
-                items(messages.reversed()) { message ->
-                    MessageBubble(message = message, isLastAiMessage = message.id == messages.lastOrNull { it.sender == Sender.AI }?.id)
+                items(uiState.messages.reversed()) { message ->
+                    MessageBubble(
+                        message = message,
+                        isLastAiMessage = message.id == uiState.messages.lastOrNull { it.sender == Sender.AI }?.id
+                    )
                 }
             }
         }
@@ -138,7 +159,6 @@ fun MessageBubble(message: Message, isLastAiMessage: Boolean) {
                 }
             }
             isLastAiMessage -> {
-                // Last AI message with animated border
                 val infiniteTransition = rememberInfiniteTransition(label = "shimmer-animation")
                 val offset by infiniteTransition.animateFloat(
                     initialValue = -500f,
@@ -170,7 +190,6 @@ fun MessageBubble(message: Message, isLastAiMessage: Boolean) {
                 }
             }
             else -> {
-                // Older AI message bubble (static)
                 Box(
                     modifier = Modifier
                         .clip(shape)
