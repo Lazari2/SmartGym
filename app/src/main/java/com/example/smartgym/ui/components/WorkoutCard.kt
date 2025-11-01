@@ -2,6 +2,7 @@ package com.example.smartgym.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +43,7 @@ fun WorkoutCard(workout: WorkoutData, onClick: () -> Unit) {
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Icon(
                 imageVector = workout.icon,
@@ -76,34 +77,23 @@ fun WorkoutCard(workout: WorkoutData, onClick: () -> Unit) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Bottom
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(
-                        text = workout.setsInfo,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White
-                    )
-                    Spacer(Modifier.weight(1f))
-                    if (workout.isNewRecord) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.EmojiEvents,
-                                contentDescription = "Novo Recorde!",
-                                tint = Color(0xFFE2B616),
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Novo Recorde!",
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }
+                    workout.exercises.forEach { exercise ->
+
+                        val weightText = exercise.weight?.let { "${it}kg" } ?: ""
+                        val repsText = exercise.reps.toString()
+                        val exerciseLine = "${exercise.template.name} - ${exercise.sets}x${repsText} ${weightText}"
+
+                        Text(
+                            text = exerciseLine,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White
+                        )
                     }
                 }
             }

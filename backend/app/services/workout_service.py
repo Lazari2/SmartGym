@@ -83,7 +83,7 @@ class WorkoutService:
         try:
             workouts = Workout.query.filter_by(member_id=member_id).order_by(Workout.created_at.desc()).all()
 
-            return [workout.to_summary_dict() for workout in workouts]
+            return [workout.to_dict() for workout in workouts]
         except Exception as e:
             print(f"Error fetching user workouts: {e}")
             raise AppError("Error searching for workouts.", 500)
@@ -92,7 +92,7 @@ class WorkoutService:
     def get_workout_details(user_id, workout_id):
         """Search for details of a specific workout."""
         
-        # VAMOS MANTER MEMBER_ID = USER_ID ATÉ CONSTRUIR O PERFIL DO USUARIO
+ 
         member_id = user_id
 
         try:

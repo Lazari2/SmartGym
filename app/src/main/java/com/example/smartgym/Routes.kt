@@ -8,5 +8,7 @@ object Routes {
     const val INITIAL = "initial_screen"
     const val CHAT = "chat_screen"
     const val PROFILE = "profile_screen"
-    const val ADD_WORKOUT = "add_workout"
+    const val ADD_WORKOUT = "add_workout_screen"
+
+    const val ADD_WORKOUT_ARG_WEEKDAY = "weekday"
 }
