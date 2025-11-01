@@ -2,6 +2,7 @@ package com.example.smartgym.viewmodel.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartgym.data.repository.TokenManager
 import com.example.smartgym.data.network.LoginRequest
 import com.example.smartgym.domain.usecase.LoginUseCase
 import com.example.smartgym.domain.util.Resource
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val tokenManager: TokenManager
 
 ) : ViewModel() {
 
@@ -65,8 +67,13 @@ class LoginViewModel @Inject constructor(
 
                     val token = result.data?.accessToken
 
-                    viewModelScope.launch {
-                        _eventFlow.emit(UiEvent.LoginSuccess)
+                    if (token != null) {
+                        viewModelScope.launch {
+                            tokenManager.saveToken(token)
+                            _eventFlow.emit(UiEvent.LoginSuccess)
+                        }
+                    } else {
+                        _uiState.update { it.copy(isLoading = false, errorMessage = "Erro inesperado: Token não recebido.") }
                     }
                 }
                 is Resource.Error -> {

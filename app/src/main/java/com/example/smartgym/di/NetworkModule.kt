@@ -5,6 +5,8 @@ import com.example.smartgym.data.repository.AuthRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 import com.example.smartgym.data.network.AuthApiService
+import com.example.smartgym.data.repository.WorkoutRepository
+import com.example.smartgym.data.repository.WorkoutRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,5 +71,14 @@ object NetworkModule {
     @Singleton
     fun provideAuthApiService(retrofit: Retrofit): AuthApiService {
         return retrofit.create(AuthApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkoutRepository(
+        api: AuthApiService,
+        json: Json
+    ): WorkoutRepository {
+        return WorkoutRepositoryImpl(api, json)
     }
 }

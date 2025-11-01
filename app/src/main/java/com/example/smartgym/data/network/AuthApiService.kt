@@ -2,12 +2,14 @@ package com.example.smartgym.data.network
 
 import com.example.smartgym.data.model.AuthResponse
 import com.example.smartgym.data.model.RegisterResponse
+import com.example.smartgym.data.model.WorkoutSummaryResponse
 import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Header
+import retrofit2.http.GET
 
-// Estas classes definem o "corpo" (Body) que VAMOS ENVIAR
 @Serializable
 data class LoginRequest(
     val email: String,
@@ -31,6 +33,8 @@ interface AuthApiService {
     @POST("api/auth/register")
     suspend fun register(@Body request: RegisterRequest): Response<RegisterResponse>
 
-    // NOTA: Ainda não criamos o endpoint /me no back-end para GET,
-    // mas quando criarmos, ele virá aqui.
+    @GET("api/workouts")
+    suspend fun getWorkouts(
+        @Header("Authorization") token: String
+    ): Response<List<WorkoutSummaryResponse>>
 }

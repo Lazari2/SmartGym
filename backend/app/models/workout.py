@@ -27,9 +27,24 @@ class Workout(db.Model):
         }
     
     def to_summary_dict(self):
+        """
+        Returns a summary to the home screen, with data for display and filtering
+        """
+
+        total_sets = 0
+        try:
+            for exercise in self.exercises:
+                total_sets += exercise.sets
+        except Exception as e:
+            print(f"Warning: We were unable to calculate the sets for the workout. {self.id}. {e}")
+            total_sets = 0 
+
+        formatted_date = self.created_at.strftime("%d/%m/%Y")
+
         return {
             'id': str(self.id),
             'name': self.name,
-            'weekday': self.weekday,
-            'created_at': self.created_at.isoformat() 
+            'date': formatted_date,   
+            'total_sets': total_sets, 
+            'weekday': self.weekday    
         }
