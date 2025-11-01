@@ -23,10 +23,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
+import com.example.smartgym.domain.usecase.LogoutUseCase
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class InitialScreenViewModel @Inject constructor(
-    private val getWorkoutsUseCase: GetWorkoutsUseCase
+    private val getWorkoutsUseCase: GetWorkoutsUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InitialScreenUiState())
@@ -137,5 +140,11 @@ class InitialScreenViewModel @Inject constructor(
             }
         }
         return streak
+    }
+    fun onLogoutClicked(onLogoutSuccess: () -> Unit) {
+        viewModelScope.launch {
+            logoutUseCase()
+            onLogoutSuccess()
+        }
     }
 }

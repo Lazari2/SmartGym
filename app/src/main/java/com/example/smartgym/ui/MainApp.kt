@@ -89,7 +89,14 @@ fun MainApp() {
             composable(Routes.INITIAL) {
                 InitialScreen(
                     uiState = initialScreenUiState,
-                    onEvent = initialScreenViewModel::onEvent
+                    onEvent = initialScreenViewModel::onEvent,
+                    onLogoutClicked = {
+                        initialScreenViewModel.onLogoutClicked {
+                            navController.navigate(Routes.LOGIN) {
+                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                            }
+                        }
+                    }
                 )
             }
             composable(Routes.CHAT) {
