@@ -146,11 +146,16 @@ class AddWorkoutViewModel @Inject constructor(
         val reps = state.currentReps.toIntOrNull()
 
         if (template == null) {
-            _uiState.update { it.copy(errorMessage = "Selecione um exercício.") }
+            viewModelScope.launch {
+                _eventFlow.emit(UiEvent.ShowToast("Selecione um exercício meu herói/heroína!"))
+            }
             return
         }
+
         if (sets == null || sets <= 0 || reps == null || reps <= 0) {
-            _uiState.update { it.copy(errorMessage = "Sets e Reps são obrigatórios.") }
+            viewModelScope.launch {
+                _eventFlow.emit(UiEvent.ShowToast("Seu exercício precisa de Sets/Reps Campeão(ã)!!"))
+            }
             return
         }
 
@@ -179,11 +184,15 @@ class AddWorkoutViewModel @Inject constructor(
         val state = _uiState.value
 
         if (state.workoutTitle.isBlank()) {
-            _uiState.update { it.copy(errorMessage = "Título do treino é obrigatório.") }
+            viewModelScope.launch {
+                _eventFlow.emit(UiEvent.ShowToast("Seu treino necessita de um Título Monstrão!!"))
+            }
             return
         }
         if (state.addedExercises.isEmpty()) {
-            _uiState.update { it.copy(errorMessage = "Adicione pelo menos um exercício.") }
+            viewModelScope.launch {
+                _eventFlow.emit(UiEvent.ShowToast("Adicione pelo menos um exercício meu BIG BIG!!"))
+            }
             return
         }
 
