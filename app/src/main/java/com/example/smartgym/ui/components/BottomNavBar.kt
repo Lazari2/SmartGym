@@ -45,7 +45,7 @@ fun BottomNavBar(currentRoute: String, onNavigate: (String) -> Unit) {
 
         NavigationBarItem(
             selected = currentRoute == Routes.PROFILE,
-            enabled = false,
+           // enabled = false,
             onClick = { onNavigate(Routes.PROFILE) },
             icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Perfil") },
             label = { Text("Perfil") },

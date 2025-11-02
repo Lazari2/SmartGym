@@ -6,12 +6,16 @@ import com.example.smartgym.data.model.ExerciseRequest
 import com.example.smartgym.data.model.RegisterResponse
 import com.example.smartgym.data.model.WorkoutDetailResponse
 import com.example.smartgym.data.model.ExerciseTemplateResponse
+import com.example.smartgym.data.model.MessageResponse
+import com.example.smartgym.data.model.ProfileRequest
+import com.example.smartgym.data.model.ProfileResponse
 import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Header
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 @Serializable
@@ -73,4 +77,15 @@ interface AuthApiService {
         @Header("Authorization") token: String,
         @Body request: IaGenerateRequest
     ): Response<IaGenerateResponse>
+
+    @GET("/api/profile/")
+    suspend fun getProfile(
+        @Header("Authorization") authHeader: String
+    ): ProfileResponse
+
+    @PUT("/api/profile/")
+    suspend fun updateProfile(
+        @Header("Authorization") authHeader: String,
+        @Body request: ProfileRequest
+    ): MessageResponse
 }
