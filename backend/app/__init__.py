@@ -24,11 +24,13 @@ def create_app():
         from .routes.exercise_routes import exercise_bp
         from .routes.workout_routes import workout_bp
         from .routes.chat_routes import chat_bp
+        from .routes.profile_routes import profile_bp
     #Blueprints
         app.register_blueprint(auth_bp)
         app.register_blueprint(exercise_bp)
         app.register_blueprint(workout_bp)
         app.register_blueprint(chat_bp)
+        app.register_blueprint(profile_bp)
         
         from . import commands
         app.cli.add_command(commands.seed_db) # COMANDO PARA POPULAR O BANCO COM EXERCÍCIOS
