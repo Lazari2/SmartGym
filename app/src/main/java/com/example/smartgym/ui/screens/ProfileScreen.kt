@@ -186,7 +186,6 @@ fun ProfileScreen(
 
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        // --- 🎨 COR ALTERADA DE VOLTA 🎨 ---
                         colors = CardDefaults.cardColors(containerColor = PrimaryBlack.copy(alpha = 0.5f))
                     ) {
                         Column(
@@ -204,13 +203,11 @@ fun ProfileScreen(
                                     colors = textFieldColors,
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                     singleLine = true,
-                                    readOnly = !isEditing // Só é editável se isEditing = true
+                                    readOnly = !isEditing
                                 )
                                 OutlinedTextField(
                                     value = uiState.height,
-                                    // Validação: Permite n.nn (ex: 1.80)
                                     onValueChange = { newHeight ->
-                                        // Regex simples para formato de altura (ex: 1.75, 2.0, 1)
                                         if (newHeight.matches(Regex("^\\d{0,1}(\\.\\d{0,2})?\$"))) {
                                             viewModel.onEvent(ProfileEvent.OnHeightChanged(newHeight))
                                         }
@@ -220,7 +217,7 @@ fun ProfileScreen(
                                     colors = textFieldColors,
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                     singleLine = true,
-                                    readOnly = !isEditing // Só é editável se isEditing = true
+                                    readOnly = !isEditing
                                 )
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
@@ -239,10 +236,8 @@ fun ProfileScreen(
                         }
                     }
 
-                    // --- Campo de Meta (Corrigido) ---
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        // --- 🎨 COR ALTERADA DE VOLTA 🎨 ---
                         colors = CardDefaults.cardColors(containerColor = PrimaryBlack.copy(alpha = 0.5f)),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -255,9 +250,7 @@ fun ProfileScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .defaultMinSize(minHeight = 120.dp),
-                            // Tornamos o fundo do TextField transparente para se misturar ao Card
                             colors = OutlinedTextFieldDefaults.colors(
-                                // Cores do texto e label (igual ao textFieldColors)
                                 focusedLabelColor = Color.White,
                                 unfocusedLabelColor = Color.Gray,
                                 focusedTextColor = Color.White,
@@ -265,8 +258,6 @@ fun ProfileScreen(
                                 disabledLabelColor = Color.Gray,
                                 disabledTextColor = Color.White.copy(alpha = 0.8f),
                                 cursorColor = DarkRed,
-
-                                // Cores da borda e fundo (transparentes)
                                 focusedBorderColor = Color.Transparent,
                                 unfocusedBorderColor = Color.Transparent,
                                 disabledBorderColor = Color.Transparent,
