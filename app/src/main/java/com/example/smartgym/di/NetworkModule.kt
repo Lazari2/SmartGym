@@ -37,7 +37,11 @@ abstract class RepositoryModule {
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://10.0.2.2:5000/"
+    //emulador
+//    private const val BASE_URL = "http://10.0.2.2:5000/"
+
+    //sem emulador
+    private const val BASE_URL = "http://192.168.15.5:5000/"
 
     @Provides
     @Singleton
