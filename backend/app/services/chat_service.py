@@ -15,7 +15,8 @@ class ChatService:
     def get_chat_response(prompt):
         """Sends a prompt and the bot returns the text response."""
         try:
-            model = genai.GenerativeModel('models/gemini-2.5-pro')
+            #model = genai.GenerativeModel('models/gemini-2.5-pro')
+            model = genai.GenerativeModel('models/gemini-2.5-flash')
             
             persona = (
                 "You are the 'SmartGym AI,' an expert personal trainer"
